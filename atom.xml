@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://yanjielk.github.io</id>
     <title>Yanjielk</title>
-    <updated>2020-04-24T03:07:52.691Z</updated>
+    <updated>2020-04-24T04:20:27.433Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://yanjielk.github.io"/>
     <link rel="self" href="https://yanjielk.github.io/atom.xml"/>
@@ -11,7 +11,7 @@
     <icon>https://yanjielk.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, Yanjielk</rights>
     <entry>
-        <title type="html"><![CDATA[同设备配置github和gitlab]]></title>
+        <title type="html"><![CDATA[同一台设备配置github和gitlab]]></title>
         <id>https://yanjielk.github.io/post/github-lab/</id>
         <link href="https://yanjielk.github.io/post/github-lab/">
         </link>
