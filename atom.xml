@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://yanjielk.github.io</id>
     <title>Yanjielk</title>
-    <updated>2020-04-24T07:24:34.430Z</updated>
+    <updated>2020-04-24T09:29:51.459Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://yanjielk.github.io"/>
     <link rel="self" href="https://yanjielk.github.io/atom.xml"/>
@@ -116,7 +116,7 @@ Host gitlab
     HostName gitlabIP地址
     User git
     IdentityFile ~/.ssh/gitlab_rsa
-# githab
+# github
 Host github
     HostName github.com
     User git
@@ -124,10 +124,10 @@ Host github
 </code></pre>
 <h3 id="二-测试连接">二. 测试连接</h3>
 <pre><code>在gitbash命令行执行:
-$ ssh -**T** git**@gitlab** 
+$ ssh -T git@gitlab
 **Welcome** to **GitLab**, yanjielk!
 
-$ ssh -**T** git**@github**
+$ ssh -T git@github
 **Hi** yanjielk! **You**'ve successfully authenticated, but **GitHub** does not provide shell access.
 </code></pre>
 <h3 id="三-配置git仓库">三. 配置git仓库</h3>
