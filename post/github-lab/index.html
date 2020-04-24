@@ -47,7 +47,6 @@
                     })();
                 </script>
                 
-        <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js"></script>
 </head>
 
 <body>
@@ -160,69 +159,163 @@
 </script>
             <div class="main">
                 <div class="container">
-                    <div class="intro">
-                        <div class="avatar">
-                            <a href="https://yanjielk.github.io"><img src="https://yanjielk.github.io/images/avatar.png?v=1587697362504"></a>
-                        </div>
-                        <div class="nickname">
-                            Yanjielk
-                        </div>
-                        <div class="description">
-                            <span id="subtitle">
+                    <article class="post-wrap">
+                        <header class="post-header">
+                            <h1 class="post-title">
+                                同设备配置github和gitlab
+                            </h1>
+                            
+                                    <!--zh-->
+                                    <div class="post-meta zh">
+                                        &#x4F5C;&#x8005;:
+                                        <a itemprop="author" rel="author" href="/">
+                                            Yanjielk
+                                        </a>
+                                        <span class="post-time">&#x65E5;&#x671F;: <a href="#">2020-04-24</a></span>
+                                        <span class="post-readtime">&#x9605;&#x8BFB;&#x65F6;&#x95F4;:<a
+                                    href="#">2.5
+                                    &#x5206;&#x949F;</a></span>
+                                        <span class="post-words">&#x5B57;&#x6570;:<a href="#">631</a></span>
+                                        
+                                            <span class="post-category">&#x5206;&#x7C7B;:
+                                
+                                <a href="https://yanjielk.github.io/tag/GAC72wnos/">git</a>
                                 
                             </span>
-                        </div>
-                        <div class="links">
-                            
-                                
-                                        
-                                
-                                        
-                                
-                                        
-                                
-                                    <a class="link-item" href="https://github.com/yanjielk" title="github"><i class="fa fa-github"></i></a>
+                                            
+                                                阅读量:
+                                                <span data-hk-page="current"> - </span>
+                                                
+                                    </div>
                                     
-                                        
-                                
-                                        
-                                
-                                        
-                                
-                                        
-                                
-                                        
-                                
-                                        
-                                
-                                        
+                        </header>
+                        
+                        <div class="post-content">
+                            <h3 id="一-生成ssh秘钥">一. 生成ssh秘钥</h3>
+<p>分别对github和gitlab生成对应秘钥(默认情况下生产秘钥位于当前用户 .ssh目录内)<br>
+1.在gitbash中使用ssh-keygen -t rsa -C &quot;公司邮箱地址&quot; -f ~/.ssh/gitlab_rsa 生成对应的gitlab密钥：gitlab_rsa和gitlab_rsa.pub<br>
+2.将gitlab公钥即gitlab_rsa.pub中的内容配置到公司的gitlab上<br>
+3.在gitbash中使用ssh-keygen -t rsa -C &quot;github地址&quot; -f ~/.ssh/github_rsa生成对应的github密钥：github_rsa和github_rsa.pub<br>
+4.将github公钥即github_rsa.pub中的内容配置到自己的github上<br>
+5.进入密钥生成的位置(.ssh目录下)，创建一个config文件，添加配置：</p>
+<pre><code># gitlab
+Host gitlab
+    HostName gitlabIP地址
+    User git
+    IdentityFile ~/.ssh/gitlab_rsa
+# githab
+Host github
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/github_rsa
+</code></pre>
+<h3 id="二-测试连接">二. 测试连接</h3>
+<pre><code>在gitbash命令行执行:
+$ ssh -**T** git**@gitlab** 
+**Welcome** to **GitLab**, yanjielk!
+
+$ ssh -**T** git**@github**
+**Hi** yanjielk! **You**'ve successfully authenticated, but **GitHub** does not provide shell access.
+</code></pre>
+<h3 id="三-配置git仓库">三. 配置git仓库</h3>
+<p>git的config文件记录了用户的基本信息，需要配置在不同的本地仓库配置不同的用户信息来访问不同的远程仓库。config文件通常有三个位置：<br>
+<strong>system(系统级别):</strong><br>
+<strong>位于Windows下在git的安装目录， 包含了适用于系统所有用户和所有库的值。如果你传递参数选项’--system’ 给 git config，它将明确的读和写这个文件。</strong><br>
+<strong>global(用户级别)</strong><br>
+<strong>位于~/.gitconfig，具体到你的用户。你可以通过传递--global 选项使Git 读或写这个特定的文件。</strong><br>
+<strong>local(仓库级别)</strong><br>
+<strong>位于 .git/config，无论你当前在用的库是什么，特定指向该单一的库。每个级别重写前一个级别的值。</strong></p>
+<h3 id="1-用户级别配置">1. 用户级别配置</h3>
+<pre><code>因为公司的代码使用频率较高，所以我们将git配置文件的global（用户级别）设置为公司的gitlab账号,在gitlab中使用如下命令：
+git config --global user.name 'yanjie' #公司账号名称
+git config --global user.email 'yanjie@cecdat.com' #公司账号邮箱
+</code></pre>
+<h3 id="2-仓库级别配置">2. 仓库级别配置</h3>
+<pre><code>将local（仓库级别）配置成github的账号。需要先init一个git的仓库并进入里面后执行如下命令：
+git config --local user.name 'yanjie' #github账号名称
+git config --local user.email 'yanjielk@gmail.com' #github账号邮箱
+之后我们github的代码都在这个仓库下拉取。
+</code></pre>
+<h3 id="3-克隆代码">3. 克隆代码</h3>
+<pre><code>$ git clone git@github.com:yanjielk/yanjielk.git
+在使用github克隆代码时，因为配置了config, 所以会通过配置的host自动查找到git@github.com。对于gitlab也是相同的道理
+</code></pre>
+
                         </div>
-                    </div>
+                        
+                                
+                                    
+                                            <!--zh-->
+                                            <section class="post-copyright zh">
+                                                <p class="copyright-item ">
+                                                    <span>&#x4F5C;&#x8005;:</span>
+                                                    <span>Yanjielk</span>
+                                                </p>
+
+                                                <p class="copyright-item">
+                                                    <span>&#x6C38;&#x4E45;&#x94FE;&#x63A5;:</span>
+                                                    <span><a href="https://yanjielk.github.io/post/github-lab/">https://yanjielk.github.io/post/github-lab/</a></span>
+                                                </p>
+
+                                                <p class="copyright-item">
+                                                    <span>&#x534F;&#x8BAE;:</span>
+                                                    <span>MIT License</span>
+                                                </p>
+                                            </section>
+                                            
+                                                
+                                                    
+                                                                    <!--Share-->
+                                                                    <span style="margin-right:15px">
+                        <i class="post-share"></i>
+                        <span>&#x5206;&#x4EAB;:</span>
+                                                                    <a title="QR 码" target="_blank" href="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://yanjielk.github.io/post/github-lab/"><i class="fa fa-qrcode"></i></a>
+                                                                    <a title="QQ" target="_blank" href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://yanjielk.github.io/post/github-lab/&sharesource=qzone&title=同设备配置github和gitlab&pics=https://yanjielk.github.io/images/avatar.png?v=1587697362504&summary="><i class="fa fa-qq"></i></a>
+                                                                    <a title="新浪微博" target="_blank" href="https://service.weibo.com/share/share.php?url=https://yanjielk.github.io/post/github-lab/&sharesource=weibo&title=同设备配置github和gitlab + " - " + &pic="https://yanjielk.github.io/images/avatar.png?v=1587697362504 "><i class="fa fa-weibo "></i></a>
+
+                                                                    </span>
+                                                                    
+                                                                            <!--zh-->
+                                                                            <section class="post-tags zh ">
+                                                                                <div>
+                                                                                    <span>&#x6807;&#x7B7E;:</span>
+                                                                                    <span class="tag ">
+                        
+                        
+                        <a href="https://yanjielk.github.io/tag/GAC72wnos/">#
+                    git
+                        </a>
+                        
+                            
+                                </span>
+                                                                                </div>
+                                                                                <div>
+                                                                                    <a href="javascript:window.history.back();">
+                        &#x8FD4;&#x56DE;</a>
+                                                                                    <span>&dot;</span>
+                                                                                    <a href="#">&#x4E3B;&#x9875;</a>
+                                                                                </div>
+                                                                            </section>
+
+                                                                            
+                                                                                <!---->
+                                                                                <section class="post-nav">
+                                                                                    
+                                                                                            
+                                                                                                <a class="next" rel="next" href="https://yanjielk.github.io/post/hello-gridea/">
+                                                                                                    Hello Gridea
+                                                                                                </a>
+                                                                                                
+                                                                                </section>
+                    </article>
                 </div>
+                
+                                            
             </div>
     </div>
-
-</body>
-<script>
-    // type 
-    var typed = new Typed("#subtitle", {
-        strings: ['', '', ''],
-        startDelay: 10,
-        typeSpeed: 200,
-        loop: true,
-        backSpeed: 100,
-        showCursor: true
-    });
-    //head title
-    var titleTime;
-    document.addEventListener("visibilitychange", function() {
-        document.hidden ? (document.title = "\uD83D\uDE25" + OriginTitile, clearTimeout(titleTime)) : (document.title = "\uD83D\uDE1D" + OriginTitile, titleTime = setTimeout(function() {
-            document.title = OriginTitile
-        }, 2E3))
-    });
-    var OriginTitile = document.title;
-</script>
-
+    </div>
+    </div>
+    
         <footer id="footer" class="footer">
             <div class="copyright">
                 
@@ -332,5 +425,10 @@
                         tpwidget("show");
                     </script>
                     
+        </div>
+</body>
+<script>
+    scroll();
+</script>
 
 </html>
