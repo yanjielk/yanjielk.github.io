@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://yanjielk.github.io</id>
     <title>Yanjielk</title>
-    <updated>2020-04-24T04:20:27.433Z</updated>
+    <updated>2020-04-24T06:20:03.283Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://yanjielk.github.io"/>
     <link rel="self" href="https://yanjielk.github.io/atom.xml"/>
@@ -10,6 +10,94 @@
     <logo>https://yanjielk.github.io/images/avatar.png</logo>
     <icon>https://yanjielk.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, Yanjielk</rights>
+    <entry>
+        <title type="html"><![CDATA[离线安装elasticdump及命令]]></title>
+        <id>https://yanjielk.github.io/post/chi-xian-an-zhuang-elasticdump/</id>
+        <link href="https://yanjielk.github.io/post/chi-xian-an-zhuang-elasticdump/">
+        </link>
+        <updated>2020-04-24T06:02:13.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="一离线安装elasticdump">一.离线安装elasticdump</h2>
+<p>准备工作:<br>
+下载压缩包: 链接: https://pan.baidu.com/s/1VD--fwspgUCJ_7n_kHNlzw 提取码: 3zsh</p>
+<p>1.下载两个压缩包<br>
+node-v10.16.0-linux-x64.tar.xz 存放到/opt 目录下<br>
+npm-cache.tar 存放到/root 目录下<br>
+2.在/opt目录下，解压node-v10.16.0-linux-x64.tar.xz包</p>
+<pre><code>tar -xvf node-v10.16.0-linux-x64.tar.xz
+</code></pre>
+<p>3.配置环境变量，</p>
+<pre><code>vim /etc/profile
+export NODE_HOME=/opt/node-v10.16.0-linux-x64
+export PATH=$PATH:$NODE_HOME/bin
+
+source /etc/profile
+</code></pre>
+<p>4.确认是否安装成功</p>
+<pre><code>node -v  
+npm -v
+</code></pre>
+<p>5.解压 npm-cache.tar的包，</p>
+<pre><code>cd /root
+tar -xvf npm-cache.tar
+
+ll -h 检查是否存在.npm目录
+</code></pre>
+<p>6.执行安装elasticdump命令</p>
+<pre><code> cd /opt/node-v10.16.0-linux-x64/lib
+ npm install --cache /root/.npm --optional --cache-min 99999999 --shrinkwrap false elasticdump
+</code></pre>
+<p>7.检查状态</p>
+<pre><code>执行命令 
+elasticdump --help
+</code></pre>
+<h3 id="二基础命令es数据迁移">二.基础命令(es数据迁移)</h3>
+<h4 id="1-数据迁移">1. 数据迁移</h4>
+<pre><code>input:配置es输出数据IP地址
+output:配置es接收数据IP地址
+数据迁移： 
+'#拷贝analyzer分词
+elasticdump \
+  --input=http://localhost:9200/my_index \
+  --output=http://localhost1:9200/my_index \
+  --type=analyzer
+
+'#拷贝映射
+elasticdump \
+  --input=http://localhost:9200/my_index \
+  --output=http://localhost1:9200/my_index \
+  --type=mapping
+  
+  '#拷贝数据
+elasticdump \
+  --input=http://localhost:9200/my_index \
+  --output=http://localhost1:9200/my_index \
+  --type=data
+</code></pre>
+<h4 id="2-保存本地方法">2. 保存本地方法</h4>
+<pre><code># 备份索引数据到文件里:
+elasticdump \
+  --input=http://localhost:9200/my_index \
+  --output=/data/my_index_mapping.json \
+  --type=mapping
+elasticdump \
+  --input=http://localhost:9200/my_index \
+  --output=/data/my_index.json \
+  --type=data
+
+# 把一个查询结果备份到文件中
+elasticdump \
+  --input=http://localhost:9200/my_index \
+  --output=query.json \
+  --searchBody '{&quot;query&quot;:{&quot;term&quot;:{&quot;username&quot;: &quot;admin&quot;}}}'
+
+恢复数据
+# 将备份文件的数据导入ES
+elasticdump \
+  --input=./data.json \
+  --output=http://localhost:9200 
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[同一台设备配置github和gitlab]]></title>
         <id>https://yanjielk.github.io/post/github-lab/</id>
