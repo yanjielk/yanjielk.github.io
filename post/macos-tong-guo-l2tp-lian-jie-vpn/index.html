@@ -162,7 +162,7 @@
                     <article class="post-wrap">
                         <header class="post-header">
                             <h1 class="post-title">
-                                离线安装elasticdump及命令
+                                macOS通过L2TP连接VPN
                             </h1>
                             
                                     <!--zh-->
@@ -173,16 +173,10 @@
                                         </a>
                                         <span class="post-time">&#x65E5;&#x671F;: <a href="#">2020-04-24</a></span>
                                         <span class="post-readtime">&#x9605;&#x8BFB;&#x65F6;&#x95F4;:<a
-                                    href="#">1.9
+                                    href="#">0.4
                                     &#x5206;&#x949F;</a></span>
-                                        <span class="post-words">&#x5B57;&#x6570;:<a href="#">384</a></span>
+                                        <span class="post-words">&#x5B57;&#x6570;:<a href="#">97</a></span>
                                         
-                                            <span class="post-category">&#x5206;&#x7C7B;:
-                                
-                                <a href="https://yanjielk.github.io/tag/c2nQEKrvJ/">elasticsearch</a>
-                                
-                            </span>
-                                            
                                                 阅读量:
                                                 <span data-hk-page="current"> - </span>
                                                 
@@ -191,86 +185,31 @@
                         </header>
                         
                         <div class="post-content">
-                            <h2 id="一离线安装elasticdump">一.离线安装elasticdump</h2>
-<p>准备工作:<br>
-下载压缩包: 链接: https://pan.baidu.com/s/1VD--fwspgUCJ_7n_kHNlzw 提取码: 3zsh</p>
-<p>1.下载两个压缩包<br>
-node-v10.16.0-linux-x64.tar.xz 存放到/opt 目录下<br>
-npm-cache.tar 存放到/root 目录下<br>
-2.在/opt目录下，解压node-v10.16.0-linux-x64.tar.xz包</p>
-<pre><code>tar -xvf node-v10.16.0-linux-x64.tar.xz
-</code></pre>
-<p>3.配置环境变量，</p>
-<pre><code>vim /etc/profile
-export NODE_HOME=/opt/node-v10.16.0-linux-x64
-export PATH=$PATH:$NODE_HOME/bin
+                            <ul>
+<li>终端命令</li>
+</ul>
+<pre><code>//跳转到ppp⽂件夹⽬录下
+cd /etc/ppp
 
-source /etc/profile
-</code></pre>
-<p>4.确认是否安装成功</p>
-<pre><code>node -v  
-npm -v
-</code></pre>
-<p>5.解压 npm-cache.tar的包，</p>
-<pre><code>cd /root
-tar -xvf npm-cache.tar
+//列出ppp⽂件夹下所有⽂件夹及⽂件
+ls
 
-ll -h 检查是否存在.npm目录
-</code></pre>
-<p>6.执行安装elasticdump命令</p>
-<pre><code> cd /opt/node-v10.16.0-linux-x64/lib
- npm install --cache /root/.npm --optional --cache-min 99999999 --shrinkwrap false elasticdump
-</code></pre>
-<p>7.检查状态</p>
-<pre><code>执行命令 
-elasticdump --help
-</code></pre>
-<h3 id="二基础命令es数据迁移">二.基础命令(es数据迁移)</h3>
-<h4 id="1-数据迁移">1. 数据迁移</h4>
-<pre><code>input:配置es输出数据IP地址
-output:配置es接收数据IP地址
-数据迁移： 
-'#拷贝analyzer分词
-elasticdump \
-  --input=http://localhost:9200/my_index \
-  --output=http://localhost1:9200/my_index \
-  --type=analyzer
+//创建options⽂件，并编辑
+sudo vim options
 
-'#拷贝映射
-elasticdump \
-  --input=http://localhost:9200/my_index \
-  --output=http://localhost1:9200/my_index \
-  --type=mapping
-  
-  '#拷贝数据
-elasticdump \
-  --input=http://localhost:9200/my_index \
-  --output=http://localhost1:9200/my_index \
-  --type=data
-</code></pre>
-<h4 id="2-保存本地方法">2. 保存本地方法</h4>
-<pre><code># 备份索引数据到文件里:
-elasticdump \
-  --input=http://localhost:9200/my_index \
-  --output=/data/my_index_mapping.json \
-  --type=mapping
-elasticdump \
-  --input=http://localhost:9200/my_index \
-  --output=/data/my_index.json \
-  --type=data
+//点击 i 键，进⾏编辑
+//输⼊如下内容
+plugin L2TP.ppp
+l2tpnoipsec
 
-# 把一个查询结果备份到文件中
-elasticdump \
-  --input=http://localhost:9200/my_index \
-  --output=query.json \
-  --searchBody '{&quot;query&quot;:{&quot;term&quot;:{&quot;username&quot;: &quot;admin&quot;}}}'
-
-恢复数据
-# 将备份文件的数据导入ES
-elasticdump \
-  --input=./data.json \
-  --output=http://localhost:9200 
 </code></pre>
+<blockquote>
+<p>仅仅 2 ⾏，就像 Windows 通过纯 L2TP 时在注册表添加 prohibitipsec ⼀样简单。 保存以后，再<br>
+拨号，⽴⻢就成功了。</p>
+</blockquote>
+<ul>
+<li>打开 系统设置 --&gt;进⾏ ⽹络设置</li>
+</ul>
 
                         </div>
                         
@@ -285,7 +224,7 @@ elasticdump \
 
                                                 <p class="copyright-item">
                                                     <span>&#x6C38;&#x4E45;&#x94FE;&#x63A5;:</span>
-                                                    <span><a href="https://yanjielk.github.io/post/chi-xian-an-zhuang-elasticdump/">https://yanjielk.github.io/post/chi-xian-an-zhuang-elasticdump/</a></span>
+                                                    <span><a href="https://yanjielk.github.io/post/macos-tong-guo-l2tp-lian-jie-vpn/">https://yanjielk.github.io/post/macos-tong-guo-l2tp-lian-jie-vpn/</a></span>
                                                 </p>
 
                                                 <p class="copyright-item">
@@ -300,9 +239,9 @@ elasticdump \
                                                                     <span style="margin-right:15px">
                         <i class="post-share"></i>
                         <span>&#x5206;&#x4EAB;:</span>
-                                                                    <a title="QR 码" target="_blank" href="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://yanjielk.github.io/post/chi-xian-an-zhuang-elasticdump/"><i class="fa fa-qrcode"></i></a>
-                                                                    <a title="QQ" target="_blank" href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://yanjielk.github.io/post/chi-xian-an-zhuang-elasticdump/&sharesource=qzone&title=离线安装elasticdump及命令&pics=https://yanjielk.github.io/images/avatar.png?v=1587713058087&summary="><i class="fa fa-qq"></i></a>
-                                                                    <a title="新浪微博" target="_blank" href="https://service.weibo.com/share/share.php?url=https://yanjielk.github.io/post/chi-xian-an-zhuang-elasticdump/&sharesource=weibo&title=离线安装elasticdump及命令 + " - " + &pic="https://yanjielk.github.io/images/avatar.png?v=1587713058087 "><i class="fa fa-weibo "></i></a>
+                                                                    <a title="QR 码" target="_blank" href="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://yanjielk.github.io/post/macos-tong-guo-l2tp-lian-jie-vpn/"><i class="fa fa-qrcode"></i></a>
+                                                                    <a title="QQ" target="_blank" href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://yanjielk.github.io/post/macos-tong-guo-l2tp-lian-jie-vpn/&sharesource=qzone&title=macOS通过L2TP连接VPN&pics=https://yanjielk.github.io/images/avatar.png?v=1587713058087&summary="><i class="fa fa-qq"></i></a>
+                                                                    <a title="新浪微博" target="_blank" href="https://service.weibo.com/share/share.php?url=https://yanjielk.github.io/post/macos-tong-guo-l2tp-lian-jie-vpn/&sharesource=weibo&title=macOS通过L2TP连接VPN + " - " + &pic="https://yanjielk.github.io/images/avatar.png?v=1587713058087 "><i class="fa fa-weibo "></i></a>
 
                                                                     </span>
                                                                     
@@ -312,12 +251,6 @@ elasticdump \
                                                                                     <span>&#x6807;&#x7B7E;:</span>
                                                                                     <span class="tag ">
                         
-                        
-                        <a href="https://yanjielk.github.io/tag/c2nQEKrvJ/">#
-                    elasticsearch
-                        </a>
-                        
-                            
                                 </span>
                                                                                 </div>
                                                                                 <div>
@@ -333,10 +266,6 @@ elasticdump \
                                                                                 <section class="post-nav">
                                                                                     
                                                                                             
-                                                                                                <a class="next" rel="next" href="https://yanjielk.github.io/post/github-lab/">
-                                                                                                    同一台设备配置github和gitlab
-                                                                                                </a>
-                                                                                                
                                                                                 </section>
                     </article>
                 </div>
