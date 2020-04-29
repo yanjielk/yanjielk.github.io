@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html>
 
 <head>
-    
-        <meta charset="utf-8" />
+    <meta charset="utf-8" />
 <title>
-    文章 | Yanjielk
+    Yanjielk
 </title>
 <!--[if lt IE 9]><script src="//cdn.bootcss.com/html5shiv/r29/html5.js"></script><![endif]-->
 <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
@@ -48,7 +47,6 @@
                     })();
                 </script>
                 
-            
 </head>
 
 <body>
@@ -159,122 +157,253 @@
 
     }
 </script>
-            <div class="post-main">
-                <div class="post-list">
-                    
-    
-        
-                
-                    
-    
-                    
-    
-        
-                
-                    
-    
-        
-                
-                    
-    
-                    
-    
-                    
+            <div class="main">
+                <div class="container">
+                    <article class="post-wrap">
+                        <header class="post-header">
+                            <h1 class="post-title">
+                                Java8 全新的日期时间API实践
+                            </h1>
+                            
+                                    <!--zh-->
+                                    <div class="post-meta zh">
+                                        &#x4F5C;&#x8005;:
+                                        <a itemprop="author" rel="author" href="/">
+                                            Yanjielk
+                                        </a>
+                                        <span class="post-time">&#x65E5;&#x671F;: <a href="#">2020-04-29</a></span>
+                                        <span class="post-readtime">&#x9605;&#x8BFB;&#x65F6;&#x95F4;:<a
+                                    href="#">4.2
+                                    &#x5206;&#x949F;</a></span>
+                                        <span class="post-words">&#x5B57;&#x6570;:<a href="#">953</a></span>
+                                        
+                                                阅读量:
+                                                <span data-hk-page="current"> - </span>
+                                                
+                                    </div>
+                                    
+                        </header>
                         
-                            
+                        <div class="post-content">
+                            <h3 id="一-simpledateformat">一、SimpleDateFormat</h3>
+<p><strong>1.SimpleDateFormat线程不安全的</strong><br>
+<strong>原因:</strong><br>
+ 如果把SimpleDateFormat定义成static成员变量，那么多个thread之间会共享这个sdf对象， 所以Calendar对象也会共享。<br>
+ 假定线程A和线程B都进入了parse(text, pos) 方法， 线程B执行到calendar.clear()后，线程A执行到calendar.getTime(), 那么就会有问题。</p>
+<p><strong>解决:</strong><br>
+ 1.方法内部创建SimpleDateFormat将有线程安全的对象由共享变为私有局部变量都可以避免多线程问题，同时也加重了创建对象的负担。<br>
+ 2.将SimpleDateFormat进行同步使用，在每次执行时都对其加锁，这样也会影响性能，想要调用此方法的线程就需要block，当多线程并发量比较大时会对性能产生一定影响<br>
+ 总结：不同线程之间不共享相同的SimpleDateFormat，从而避免了线程安全问题</p>
+<h3 id="二-javatime">二、java.time</h3>
+<p> Java 8 推出了全新的日期时间API，新API基于ISO标准日历系统，java.time包下的所有类都是不可变类型而且线程安全。<br>
+<strong>1.新时间日期API介绍</strong></p>
+<ul>
+<li>Instant: 时间戳</li>
+<li>Duration: 持续时间，时间差</li>
+<li>LocalDate: 只包含日期，如：2020-04-29</li>
+<li>LocalTiome: 只包含时间：如：12:12:00</li>
+<li>LocalDateTime: 包含时间和日期，如：2020-04-29 12:12:00</li>
+<li>Period: 时间段</li>
+<li>ZoneOffset: 时间偏移量，如：+8:00</li>
+<li>ZooedDateTime: 带时区的时间</li>
+<li>Clock: 时钟，比如获取目前美国纽约的时间</li>
+<li>java.time.format.DateTimeFormatter: 时间格式化</li>
+</ul>
+<p><strong>2.实践</strong></p>
+<ul>
+<li><strong>获取当前日期(不包含时间)</strong></li>
+</ul>
+<pre><code>public class App {
+    public static void main(String[] args) {
+        LocalDate today = LocalDate.now(); // now(): 静态方法，根据当前时间创建对象
+        System.out.println(&quot;当前时间：&quot;+today);
+    }
+}
+/**
+	运行结果：当前时间：2020-04-29
+*/
+</code></pre>
+<ul>
+<li><strong>处理特定日期</strong></li>
+</ul>
+<pre><code>public class App {
+    public static void main(String[] args) {
+        LocalDate date = LocalDate.of(2020,4,20);
+        System.out.println(&quot;自定义时间：&quot;+date);
+    }
+}
+/**
+	运行结果：自定义时间：2020-04-20
+*/
+</code></pre>
+<ul>
+<li><strong>判断两个日期是否相等</strong></li>
+</ul>
+<pre><code>public class App {
+    public static void main(String[] args) {
+        LocalDate today = LocalDate.now();
+        LocalDate date = LocalDate.of(2020,4,20);
+        if (today.equals(date)){
+            System.out.println(&quot;相等&quot;);
+        }else {
+            System.out.println(&quot;不相等&quot;);
+        }
+    }
+}
+</code></pre>
+<ul>
+<li><strong>获取当前时间(不包含日期)</strong></li>
+</ul>
+<pre><code>public class App {
+    public static void main(String[] args) {
+        LocalTime time = LocalTime.now();
+        System.out.println(&quot;现在时间为:&quot;+time);
+    }
+}
+/**
+	运行结果：现在时间为:09:39:26.436
+*/
+</code></pre>
+<ul>
+<li><strong>获取当前时间(包含日期及时间)</strong></li>
+</ul>
+<pre><code>public class App {
+    public static void main(String[] args) {
+        LocalDateTime DateTime = LocalDateTime.now();
+        System.out.println(&quot;当前时间为:&quot;+DateTime);
+    }
+}
+/**
+	运行结果：当前时间为:2020-04-29T09:44:31.199
+*/
+</code></pre>
+<ul>
+<li><strong>判断日期是早于还是晚于另一个日期</strong></li>
+</ul>
+<pre><code>public class App {
+    public static void main(String[] args) {
+        LocalDate date = LocalDate.now();
+        LocalDate newDate = LocalDate.of(2020,3,6);
+        if (newDate.isAfter(date)){
+            System.out.println(&quot;在当前时间之后发生&quot;);
+        }
+        if (newDate.isBefore(date)){
+            System.out.println(&quot;在当前时间之前发生&quot;);
+        }
+    }
+}
+</code></pre>
+<ul>
+<li><strong>两个日期之间的天数和月数</strong></li>
+</ul>
+<pre><code>public class App {
+    public static void main(String[] args) {
+        LocalDate date = LocalDate.now();
+        LocalDate newDate = LocalDate.of(2020, 3, 6);
+        Period period = Period.between(date, newDate);
+        System.out.println(&quot;相差天数：&quot; + period.getDays());
+        System.out.println(&quot;相差月数：&quot; + period.getMonths());
+        System.out.println(&quot;相差年数：&quot; + period.getYears());
+    }
+}
+/**
+	运行结果：
+			相差天数：-23
+			相差月数：-1
+			相差年数：0
+*/
+</code></pre>
+<ul>
+<li><strong>字符串互转日期类型</strong></li>
+</ul>
+<pre><code>public class App {
+    public static void main(String[] args) {
+        //日期类型转为字符串
+        LocalDateTime localDateTime = LocalDateTime.of(2020,2,1,5,6);
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(&quot;yyyy/MM/dd HH:mm:ss&quot;);
+        String str = localDateTime.format(dateTimeFormatter);
+        System.out.println(&quot;日期类型转为字符串:&quot;+str);
+        //字符串类型转为日期类型
+        String time = &quot;2020/02/03 12:12:12&quot;;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(&quot;yyyy/MM/dd HH:mm:ss&quot;);
+        LocalDateTime date = LocalDateTime.parse(time,formatter);
+        System.out.println(&quot;字符串类型转为日期类型:&quot;+date);
+    }
+}
+/**
+	运行结果：
+			日期类型转为字符串:2020/02/01 05:06:00
+			字符串类型转为日期类型:2020-02-03T12:12:12
+*/
+</code></pre>
+
+                        </div>
+                        
                                 
-                                    <section class="post-item">
-                                        <div class="content">
-                                            <a href="https://yanjielk.github.io/post/java8-quan-xin-de-ri-qi-shi-jian-api-shi-jian/">
-                                                <h2 class="post-title">
-                                                    Java8 全新的日期时间API实践
-                                                </h2>
-                                            </a>
-                                            <div class="post-abstract">
-                                                
-                                            </div>
-                                            <div class="post-info">
-                                                <span><i class="fa fa-calendar" aria-hidden="true"></i> 2020-04-29</span>
-                                                
-                                            </div>
-                                        </div>
-                                        
-                                    </section>
                                     
-                                        
+                                            <!--zh-->
+                                            <section class="post-copyright zh">
+                                                <p class="copyright-item ">
+                                                    <span>&#x4F5C;&#x8005;:</span>
+                                                    <span>Yanjielk</span>
+                                                </p>
+
+                                                <p class="copyright-item">
+                                                    <span>&#x6C38;&#x4E45;&#x94FE;&#x63A5;:</span>
+                                                    <span><a href="https://yanjielk.github.io/post/java8-quan-xin-de-ri-qi-shi-jian-api-shi-jian/">https://yanjielk.github.io/post/java8-quan-xin-de-ri-qi-shi-jian-api-shi-jian/</a></span>
+                                                </p>
+
+                                                <p class="copyright-item">
+                                                    <span>&#x534F;&#x8BAE;:</span>
+                                                    <span>MIT License</span>
+                                                </p>
+                                            </section>
                                             
-                            
-                                            
-                            
-                                
-                                    <section class="post-item">
-                                        <div class="content">
-                                            <a href="https://yanjielk.github.io/post/chi-xian-an-zhuang-elasticdump/">
-                                                <h2 class="post-title">
-                                                    离线安装elasticdump及命令
-                                                </h2>
-                                            </a>
-                                            <div class="post-abstract">
                                                 
-                                            </div>
-                                            <div class="post-info">
-                                                <span><i class="fa fa-calendar" aria-hidden="true"></i> 2020-04-24</span>
-                                                
-                                                    <span>
-        <i class="fa fa-tags" aria-hidden="true"></i>
-        
-        <a href="https://yanjielk.github.io/tag/c2nQEKrvJ/">
-          elasticsearch
-          
-        </a>
-        
-      </span>
                                                     
-                                            </div>
-                                        </div>
-                                        
-                                    </section>
-                                    
-                                        
-                                            
-                            
-                                
-                                    <section class="post-item">
-                                        <div class="content">
-                                            <a href="https://yanjielk.github.io/post/github-lab/">
-                                                <h2 class="post-title">
-                                                    同一台设备配置github和gitlab
-                                                </h2>
-                                            </a>
-                                            <div class="post-abstract">
-                                                
-                                            </div>
-                                            <div class="post-info">
-                                                <span><i class="fa fa-calendar" aria-hidden="true"></i> 2020-04-24</span>
-                                                
-                                                    <span>
-        <i class="fa fa-tags" aria-hidden="true"></i>
-        
-        <a href="https://yanjielk.github.io/tag/GAC72wnos/">
-          git
-          
-        </a>
-        
-      </span>
-                                                    
-                                            </div>
-                                        </div>
-                                        
-                                    </section>
-                                    
-                                        
-                                            
-                            
-                                            
-                            
-                                            
+                                                                    <!--Share-->
+                                                                    <span style="margin-right:15px">
+                        <i class="post-share"></i>
+                        <span>&#x5206;&#x4EAB;:</span>
+                                                                    <a title="QR 码" target="_blank" href="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://yanjielk.github.io/post/java8-quan-xin-de-ri-qi-shi-jian-api-shi-jian/"><i class="fa fa-qrcode"></i></a>
+                                                                    <a title="QQ" target="_blank" href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://yanjielk.github.io/post/java8-quan-xin-de-ri-qi-shi-jian-api-shi-jian/&sharesource=qzone&title=Java8 全新的日期时间API实践&pics=https://yanjielk.github.io/images/avatar.png?v=1588163295149&summary="><i class="fa fa-qq"></i></a>
+                                                                    <a title="新浪微博" target="_blank" href="https://service.weibo.com/share/share.php?url=https://yanjielk.github.io/post/java8-quan-xin-de-ri-qi-shi-jian-api-shi-jian/&sharesource=weibo&title=Java8 全新的日期时间API实践 + " - " + &pic="https://yanjielk.github.io/images/avatar.png?v=1588163295149 "><i class="fa fa-weibo "></i></a>
+
+                                                                    </span>
+                                                                    
+                                                                            <!--zh-->
+                                                                            <section class="post-tags zh ">
+                                                                                <div>
+                                                                                    <span>&#x6807;&#x7B7E;:</span>
+                                                                                    <span class="tag ">
+                        
+                                </span>
+                                                                                </div>
+                                                                                <div>
+                                                                                    <a href="javascript:window.history.back();">
+                        &#x8FD4;&#x56DE;</a>
+                                                                                    <span>&dot;</span>
+                                                                                    <a href="#">&#x4E3B;&#x9875;</a>
+                                                                                </div>
+                                                                            </section>
+
+                                                                            
+                                                                                <!---->
+                                                                                <section class="post-nav">
+                                                                                    
+                                                                                            
+                                                                                                <a class="next" rel="next" href="https://yanjielk.github.io/post/chi-xian-an-zhuang-elasticdump/">
+                                                                                                    离线安装elasticdump及命令
+                                                                                                </a>
+                                                                                                
+                                                                                </section>
+                    </article>
                 </div>
+                
+                                            
             </div>
+    </div>
+    </div>
     </div>
     
         <footer id="footer" class="footer">
@@ -386,6 +515,10 @@
                         tpwidget("show");
                     </script>
                     
+        </div>
 </body>
+<script>
+    scroll();
+</script>
 
 </html>

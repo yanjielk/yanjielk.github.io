@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://yanjielk.github.io</id>
     <title>Yanjielk</title>
-    <updated>2020-04-24T12:14:01.252Z</updated>
+    <updated>2020-04-29T12:28:53.429Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://yanjielk.github.io"/>
     <link rel="self" href="https://yanjielk.github.io/atom.xml"/>
@@ -10,6 +10,165 @@
     <logo>https://yanjielk.github.io/images/avatar.png</logo>
     <icon>https://yanjielk.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, Yanjielk</rights>
+    <entry>
+        <title type="html"><![CDATA[Java8 全新的日期时间API实践]]></title>
+        <id>https://yanjielk.github.io/post/java8-quan-xin-de-ri-qi-shi-jian-api-shi-jian/</id>
+        <link href="https://yanjielk.github.io/post/java8-quan-xin-de-ri-qi-shi-jian-api-shi-jian/">
+        </link>
+        <updated>2020-04-29T12:11:00.000Z</updated>
+        <content type="html"><![CDATA[<h3 id="一-simpledateformat">一、SimpleDateFormat</h3>
+<p><strong>1.SimpleDateFormat线程不安全的</strong><br>
+<strong>原因:</strong><br>
+ 如果把SimpleDateFormat定义成static成员变量，那么多个thread之间会共享这个sdf对象， 所以Calendar对象也会共享。<br>
+ 假定线程A和线程B都进入了parse(text, pos) 方法， 线程B执行到calendar.clear()后，线程A执行到calendar.getTime(), 那么就会有问题。</p>
+<p><strong>解决:</strong><br>
+ 1.方法内部创建SimpleDateFormat将有线程安全的对象由共享变为私有局部变量都可以避免多线程问题，同时也加重了创建对象的负担。<br>
+ 2.将SimpleDateFormat进行同步使用，在每次执行时都对其加锁，这样也会影响性能，想要调用此方法的线程就需要block，当多线程并发量比较大时会对性能产生一定影响<br>
+ 总结：不同线程之间不共享相同的SimpleDateFormat，从而避免了线程安全问题</p>
+<h3 id="二-javatime">二、java.time</h3>
+<p> Java 8 推出了全新的日期时间API，新API基于ISO标准日历系统，java.time包下的所有类都是不可变类型而且线程安全。<br>
+<strong>1.新时间日期API介绍</strong></p>
+<ul>
+<li>Instant: 时间戳</li>
+<li>Duration: 持续时间，时间差</li>
+<li>LocalDate: 只包含日期，如：2020-04-29</li>
+<li>LocalTiome: 只包含时间：如：12:12:00</li>
+<li>LocalDateTime: 包含时间和日期，如：2020-04-29 12:12:00</li>
+<li>Period: 时间段</li>
+<li>ZoneOffset: 时间偏移量，如：+8:00</li>
+<li>ZooedDateTime: 带时区的时间</li>
+<li>Clock: 时钟，比如获取目前美国纽约的时间</li>
+<li>java.time.format.DateTimeFormatter: 时间格式化</li>
+</ul>
+<p><strong>2.实践</strong></p>
+<ul>
+<li><strong>获取当前日期(不包含时间)</strong></li>
+</ul>
+<pre><code>public class App {
+    public static void main(String[] args) {
+        LocalDate today = LocalDate.now(); // now(): 静态方法，根据当前时间创建对象
+        System.out.println(&quot;当前时间：&quot;+today);
+    }
+}
+/**
+	运行结果：当前时间：2020-04-29
+*/
+</code></pre>
+<ul>
+<li><strong>处理特定日期</strong></li>
+</ul>
+<pre><code>public class App {
+    public static void main(String[] args) {
+        LocalDate date = LocalDate.of(2020,4,20);
+        System.out.println(&quot;自定义时间：&quot;+date);
+    }
+}
+/**
+	运行结果：自定义时间：2020-04-20
+*/
+</code></pre>
+<ul>
+<li><strong>判断两个日期是否相等</strong></li>
+</ul>
+<pre><code>public class App {
+    public static void main(String[] args) {
+        LocalDate today = LocalDate.now();
+        LocalDate date = LocalDate.of(2020,4,20);
+        if (today.equals(date)){
+            System.out.println(&quot;相等&quot;);
+        }else {
+            System.out.println(&quot;不相等&quot;);
+        }
+    }
+}
+</code></pre>
+<ul>
+<li><strong>获取当前时间(不包含日期)</strong></li>
+</ul>
+<pre><code>public class App {
+    public static void main(String[] args) {
+        LocalTime time = LocalTime.now();
+        System.out.println(&quot;现在时间为:&quot;+time);
+    }
+}
+/**
+	运行结果：现在时间为:09:39:26.436
+*/
+</code></pre>
+<ul>
+<li><strong>获取当前时间(包含日期及时间)</strong></li>
+</ul>
+<pre><code>public class App {
+    public static void main(String[] args) {
+        LocalDateTime DateTime = LocalDateTime.now();
+        System.out.println(&quot;当前时间为:&quot;+DateTime);
+    }
+}
+/**
+	运行结果：当前时间为:2020-04-29T09:44:31.199
+*/
+</code></pre>
+<ul>
+<li><strong>判断日期是早于还是晚于另一个日期</strong></li>
+</ul>
+<pre><code>public class App {
+    public static void main(String[] args) {
+        LocalDate date = LocalDate.now();
+        LocalDate newDate = LocalDate.of(2020,3,6);
+        if (newDate.isAfter(date)){
+            System.out.println(&quot;在当前时间之后发生&quot;);
+        }
+        if (newDate.isBefore(date)){
+            System.out.println(&quot;在当前时间之前发生&quot;);
+        }
+    }
+}
+</code></pre>
+<ul>
+<li><strong>两个日期之间的天数和月数</strong></li>
+</ul>
+<pre><code>public class App {
+    public static void main(String[] args) {
+        LocalDate date = LocalDate.now();
+        LocalDate newDate = LocalDate.of(2020, 3, 6);
+        Period period = Period.between(date, newDate);
+        System.out.println(&quot;相差天数：&quot; + period.getDays());
+        System.out.println(&quot;相差月数：&quot; + period.getMonths());
+        System.out.println(&quot;相差年数：&quot; + period.getYears());
+    }
+}
+/**
+	运行结果：
+			相差天数：-23
+			相差月数：-1
+			相差年数：0
+*/
+</code></pre>
+<ul>
+<li><strong>字符串互转日期类型</strong></li>
+</ul>
+<pre><code>public class App {
+    public static void main(String[] args) {
+        //日期类型转为字符串
+        LocalDateTime localDateTime = LocalDateTime.of(2020,2,1,5,6);
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(&quot;yyyy/MM/dd HH:mm:ss&quot;);
+        String str = localDateTime.format(dateTimeFormatter);
+        System.out.println(&quot;日期类型转为字符串:&quot;+str);
+        //字符串类型转为日期类型
+        String time = &quot;2020/02/03 12:12:12&quot;;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(&quot;yyyy/MM/dd HH:mm:ss&quot;);
+        LocalDateTime date = LocalDateTime.parse(time,formatter);
+        System.out.println(&quot;字符串类型转为日期类型:&quot;+date);
+    }
+}
+/**
+	运行结果：
+			日期类型转为字符串:2020/02/01 05:06:00
+			字符串类型转为日期类型:2020-02-03T12:12:12
+*/
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[离线安装elasticdump及命令]]></title>
         <id>https://yanjielk.github.io/post/chi-xian-an-zhuang-elasticdump/</id>
