@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://yanjielk.github.io</id>
     <title>Yanjielk</title>
-    <updated>2020-04-29T12:30:14.135Z</updated>
+    <updated>2020-04-29T12:31:45.278Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://yanjielk.github.io"/>
     <link rel="self" href="https://yanjielk.github.io/atom.xml"/>
@@ -184,7 +184,7 @@ npm-cache.tar 存放到/root 目录下<br>
 2.在/opt目录下，解压node-v10.16.0-linux-x64.tar.xz包</p>
 <pre><code>tar -xvf node-v10.16.0-linux-x64.tar.xz
 </code></pre>
-<p>3.配置环境变量，</p>
+<p>3.配置环境变量</p>
 <pre><code>vim /etc/profile
 export NODE_HOME=/opt/node-v10.16.0-linux-x64
 export PATH=$PATH:$NODE_HOME/bin
@@ -195,7 +195,7 @@ source /etc/profile
 <pre><code>node -v  
 npm -v
 </code></pre>
-<p>5.解压 npm-cache.tar的包，</p>
+<p>5.解压 npm-cache.tar的包</p>
 <pre><code>cd /root
 tar -xvf npm-cache.tar
 
